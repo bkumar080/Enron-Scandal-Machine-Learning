@@ -1,0 +1,45 @@
+
+Exploring the Dataset
+=====================
+Number of features:  19
+Number of datapoint: 146
+Number of poi: 18
+Number of non poi: 128
+TOTAL
+
+=========>Removing the outliers<=========
+Number of datapoint excluding outliers: 143
+
+NAN count
+=========
+poi : 0
+salary : 49
+deferral_payments : 105
+total_payments : 20
+loan_advances : 140
+bonus : 62
+restricted_stock_deferred : 126
+deferred_income : 95
+total_stock_value : 18
+expenses : 49
+exercised_stock_options : 42
+long_term_incentive : 78
+restricted_stock : 34
+director_fees : 127
+to_messages : 57
+from_poi_to_this_person : 57
+from_messages : 57
+from_this_person_to_poi : 57
+shared_receipt_with_poi : 57
+
+
+Gaussian Naive Bayes
+====================
+GaussianNB Accuracy: 0.883720930233
+             precision    recall  f1-score   support
+
+        0.0       0.92      0.95      0.94        38
+        1.0       0.50      0.40      0.44         5
+
+avg / total       0.87      0.88      0.88        43
+
