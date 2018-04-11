@@ -30,11 +30,11 @@ from tester import dump_classifier_and_data
 ### Task 1: Select what features you'll use.
 ### features_list is a list of strings, each of which is a feature name.
 ### The first feature must be "poi".
-features_list = ['poi', 'salary', 'deferral_payments', 'total_payments', 'loan_advances',
-                 'bonus', 'restricted_stock_deferred', 'deferred_income', 'total_stock_value',
-                 'expenses', 'exercised_stock_options', 'long_term_incentive',
-                 'restricted_stock', 'director_fees', 'to_messages', 'from_poi_to_this_person',
-                 'from_messages', 'from_this_person_to_poi', 'shared_receipt_with_poi'] # You will need to use more features
+features_list = ['poi', 'salary',#'deferral_payments', #'total_payments', 'loan_advances',
+                 'bonus','deferred_income','bonus_salary_ratio', #'restricted_stock_deferred', 
+                 'total_stock_value',#'expenses',
+                 'exercised_stock_options',#'long_term_incentive', 'restricted_stock', 'director_fees', 'to_messages', 'from_poi_to_this_person', 'from_messages', 
+                 'from_this_person_to_poi_percentage']#, 'shared_receipt_with_poi'] # You will need to use more features
 
 #Exploring the Dataset
 print "\nExploring the Dataset\n====================="
@@ -67,14 +67,15 @@ for point in data:
     plt.scatter(salary, bonus)
 plt.xlabel('salary')
 plt.ylabel('bonus')
-plt.show() 
+# plt.show() 
 
 for key, val in data_dict.items():
     if val['salary'] != 'NaN' and val['salary'] > 10000000:
         print key
-data_dict.pop('TOTAL', 0)
-data_dict.pop('THE TRAVEL AGENCY IN THE PARK', 0)
-data_dict.pop('LOCKHART EUGENE E', 0)
+data_dict.pop('TOTAL')
+data_dict.pop('THE TRAVEL AGENCY IN THE PARK')
+# data_dict.pop('LOCKHART EUGENE E', 0)
+
 print "\n=========>Removing the outliers<========="
 print "Number of datapoint excluding outliers:", len(data_dict)
 
@@ -86,35 +87,43 @@ for point in data:
     plt.scatter(salary, bonus)
 plt.xlabel('salary')
 plt.ylabel('bonus')
-plt.show()
+# plt.show()
 
 ### Store to my_dataset for easy export below.
 my_dataset = data_dict
-                    
+              
+
 ### Missing values in each feature
 nan = [0 for i in range(len(features_list))]
 for i, person in my_dataset.iteritems():
     for j, feature in enumerate(features_list):
-        if person[feature] == 'NaN':
-            nan[j] += 1
-print "\nNAN count\n{}".format("="*len("NAN count"))
-for i, feature in enumerate(features_list):
-    print feature,':', nan[i]
+    	try:
+    		if person[feature] == 'NaN':
+        		nan[j] += 1
+        except:
+        	pass
+
 
 ### Task 3: Create new feature(s)
 # Bonus-salary ratio
+
+countttt = 0 
+# print "\n\n\nbonus, salary"
 for employee, features in data_dict.iteritems():
 	if features['bonus'] == "NaN" or features['salary'] == "NaN":
 		features['bonus_salary_ratio'] = "NaN"
 	else:
 		features['bonus_salary_ratio'] = float(features['bonus']) / float(features['salary'])
+	#print features['bonus'],features['salary'],features['bonus_salary_ratio']
 
 # from_this_person_to_poi as a percentage of from_messages
 for employee, features in data_dict.iteritems():
 	if features['from_this_person_to_poi'] == "NaN" or features['from_messages'] == "NaN":
 		features['from_this_person_to_poi_percentage'] = "NaN"
+		countttt += 1 
 	else:
 		features['from_this_person_to_poi_percentage'] = float(features['from_this_person_to_poi']) / float(features['from_messages'])
+nan[5] = countttt
 
 # from_poi_to_this_person as a percentage of to_messages
 for employee, features in data_dict.iteritems():
@@ -149,6 +158,11 @@ for employee, features in data_dict.iteritems():
 	for ef in email_features:
 		if features[ef] == "NaN":
 			features[ef] = email_feature_means[ef]
+
+#Printing the NaN values:
+print "\nNAN count\n{}".format("="*len("NAN count"))
+for i, feature in enumerate(features_list):
+    print feature,':', nan[i]
 
 
 ### Extract features and labels from dataset for local testing
@@ -289,19 +303,26 @@ def GSCV(i,features_train, features_test, labels_train, labels_test):
 		              error_score=0)
 	gs.fit(features_train, labels_train)
 	labels_predictions = gs.predict(features_test)
-
+"""
 	# Pick the classifier with the best tuned parameters
 	clf = gs.best_estimator_
 	print "\n", "Best parameters are: ", gs.best_params_, "\n"
 
 	features_selected=[features_list[i+1] for i in clf.named_steps['feature_selection'].get_support(indices=True)]
 	scores = clf.named_steps['feature_selection'].scores_
+	importances = clf.named_steps['dtc'].feature_importances_
+	indices = np.argsort(importances)[::-1]
+	print len(features_selected), " features are selected and their importances and scores are displayed below:"
+	print "{0: <4} {1: <36} {2: <15} {3: <15}".format("No.","Feature","Importance","Scores")
+	for i in range(len(features_selected)):
+	    print "{0: <4} {1: <36} {2: <15} {3: <15}".format(i+1,features_selected[indices[i]],importances[indices[i]], scores[indices[i]])
+	print "\n\nReport:"
 	return (labels_test, labels_predictions, clf)
-
-# To see Desision Tree (0), K-Nearest Neighbor (1), SVC(2) => uncomment below lines 
 """
-model = [0,1,2]
+# To see Desision Tree (0), K-Nearest Neighbor (1), SVC(2) => uncomment below lines 
+
+model = []
 for i in model:
 	labels_test, labels_predictions, clf= GSCV(i,features_train, features_test, labels_train, labels_test)
 	reporting(labels_test, labels_predictions, clf)
-	"""
+	
