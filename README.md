@@ -10,3 +10,14 @@ Install the following dependencies to successfully run this module.
 > 2. Matplotlib
 > 3. pickle
 > 4. numpy
+
+
+## Code
+
+Run the below code to see the file in a Jupyter Notebook.
+
+`$ cd Enron-Scandal-Machine-Learning`
+
+`$ python tester.py`
+
+This shows you the results of the built model.
