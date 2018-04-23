@@ -6,7 +6,7 @@ Enron Corporation is an American energy, commodities, and utilities based compan
 
 Install the following dependencies to successfully run this module.
 
-> Sci-kit learn
-Matplotlib
-pickle
-numpy
+> 1. Sci-kit learn
+> 2. Matplotlib
+> 3. pickle
+> 4. numpy
